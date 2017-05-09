@@ -8,5 +8,20 @@ namespace Shop
 {
     class ShopLogic
     {
+        ShopStorage storage = new ShopStorage();
+
+        public IReadOnlyList<Item> GetItems()
+        {
+            var Items = new
+            {
+                itemList = storage.GetItems()
+            };
+           
+            IReadOnlyList<Item> temp=Items.itemList;
+
+           return temp;
+
+         
+        }
     }
 }

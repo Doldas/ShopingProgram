@@ -43,11 +43,22 @@ namespace Shop
                         }
                         if (answer == "y")//Enter the shop
                         {
+                            ShopLogic shop=new ShopLogic();
                             bool inShop = true;
                             while (inShop)
                             {
                                 Console.Clear();
                                 Console.WriteLine("(1)Shopping cart\n(2)Search\n(0)Exit");
+                                //Detta borde inte gå för att det är read-only
+                                foreach(var item in shop.GetItems())
+                                {
+                                   item.Price = 32;
+                                }
+
+                                foreach(Item item in shop.GetItems())
+                                {
+                                    Console.WriteLine(item.Price);
+                                }
                                 switch(Console.ReadLine())
                                 {
                                     case "1":
