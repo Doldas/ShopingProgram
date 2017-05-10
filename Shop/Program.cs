@@ -13,13 +13,13 @@ namespace Shop
                 Console.Clear();
                
                 Console.WriteLine("Welcome to the Magic Store\nPlease navigate in the menu by using numbers");
-
+                //First Menu
                 Console.WriteLine("(1)Enter the shop\n(0)Exit");
                 //Main Menu
                 switch(Console.ReadLine())
                 {
                     case "1"://Entering the Shop
-                        
+                        //Ask the user if he want to enter the shop
                         bool questioning = true;
                         string answer = "-1";
                         while(questioning)
@@ -45,30 +45,22 @@ namespace Shop
                         if (answer == "y")//Enter the shop
                         {
                             ShopLogic shop=new ShopLogic();
-                            bool inShop = true;
-                            int sortValue = 0;
+                            bool inShop = true; //Main loop for the shop
+                            int sortValue = 0; // 0 means that it won't Sort , 1 is sorting name, 2 = Price 3=Price and Names , 4 = Price by category
+                          //shop loop
                             while (inShop)
                             {
                                 
                                 Console.Clear();
-                                Console.WriteLine("(1)Buy\n(2)Shopping cart\n(3)Search\n(4)Sorting\n(0)Exit");
-                                /*  I have failed with protecting the storage from editing inside Program.cs
-                                 *  Programmers can in theory inject code inside here so this is a hole on the security aspect
-                                 *  How should I do to avoid this from happening? I want some classes to be allowed for editing but the thing is
-                                 *  it can be used the other way around. I guess it's because I'm returning the same List in storage instead of returning a readonly copy
-                                foreach (Item item in shop.GetAllItems())
-                                {
-                                    item.Price = 22; //Change price for specific item
-                                }
-                                 */
-
+                                Console.WriteLine("(1)Buy\n(2)Shopping cart\n(3)Search\n(4)Sorting\n(0)Exit"); //Menu - Shop
+                                //Creating a table for items
                                 PrintLine();
                                 string[] column = {"Article Number","Name","Category","Price" };
                                 PrintRow("Item List");
                                 PrintLine();
                                 PrintRow(column);
                                 column = null;
-                                
+                                //Adding item information for all items to the table
                                 foreach(var item in shop.GetAllItems(sortValue))
                                 {
                                     PrintLine();
@@ -76,10 +68,11 @@ namespace Shop
                                     PrintRow(column2);
                                     
                                 }
+                                //Menu controls
                                 switch(Console.ReadLine())
                                 {
 
-                                    case "1":
+                                    case "1"://Buy 
                                     Console.Clear();
                                     Console.WriteLine("Please enter the item name or article number for the item you want to buy");
                                     bool added=shop.AddToCart(Console.ReadLine());
@@ -93,31 +86,18 @@ namespace Shop
                                     }
                                     Console.ReadKey();
                                         break;
-                                    case "2":
+                                    case "2"://Shopping Cart
                                     
                                     bool shoppingListLoop = true;
-                                    while(shoppingListLoop==true)
+                                    while(shoppingListLoop==true)//Shoppingcart loop
                                     {
                                         Console.Clear();
-
+                                        //Menu
                                         Console.WriteLine("1. Remove Item   2. Check out  3. Return back");
-                                        PrintLine();
-                                        string[] column4 = { "Article Number", "Name", "Category", "Price" };
-                                        PrintRow("Item List");
-                                        PrintLine();
-                                        PrintRow(column4);
-                                        column = null;
-
-                                        foreach (var item in shop.GetCartList())
-                                        {
-                                            PrintLine();
-                                            string[] column2 = { item.ProductNumber, item.Name, item.Category.ToString(), item.Price.ToString() + "$" };
-                                            PrintRow(column2);
-
-                                        }
+                                        //Menu Controlls
                                         switch(Console.ReadLine())
                                         {
-                                            case "1":
+                                            case "1"://Remove Specific Item from Shopping cart
                                                 Console.Clear();
                                                 Console.WriteLine("Enter a name or article number for the item you want to remove from your shopping cart. ");
                                                 bool removed=shop.RemoveFromCart(Console.ReadLine());
@@ -130,7 +110,7 @@ namespace Shop
                                                     Console.WriteLine("The item you want to remove doesn't exist in your shopping cart.");
                                                 }
                                                 break;
-                                            case "2": //Get the Shopping Reciept and output it too console
+                                            case "2": //User can Check out here
                                                 Console.Clear();
           
                                                 Console.WriteLine("Do you want to check out? (y/n)");
@@ -157,15 +137,31 @@ namespace Shop
                                                 }
                                                
                                                 break;
-                                            case "3"://Return back
+                                            case "3"://Return back to shop
                                                 shoppingListLoop = false;
                                                 break;
                                         }
+                                        //The table holding the user shopping cart
+                                        PrintLine();
+                                        string[] column4 = { "Article Number", "Name", "Category", "Price" };
+                                        PrintRow("Item List");
+                                        PrintLine();
+                                        PrintRow(column4);
+                                        column = null;
+
+                                        foreach (var item in shop.GetCartList())
+                                        {
+                                            PrintLine();
+                                            string[] column2 = { item.ProductNumber, item.Name, item.Category.ToString(), item.Price.ToString() + "$" };
+                                            PrintRow(column2);
+
+                                        }
                                     }
                                         break;
-                                    case "3":
+                                    case "3"://Search Name or Article
                                         Console.Clear();
                                         Console.WriteLine("Please enter something to search for item(s).");
+                                        //Table for showing searched items
                                 PrintLine();
                                 string[] column3 = {"Article Number","Name","Category","Price" };
                                 PrintRow("Item List");
@@ -182,7 +178,7 @@ namespace Shop
                                 }
                                 Console.ReadKey();
                                         break;
-                                    case "4":
+                                    case "4"://Sorting Menu - changing the sorting value
                                         Console.Clear();
                                         Console.WriteLine("Sorting Menu");
                                         Console.WriteLine("(1)Names\n(2)Price\n(3)Names and Price\n(4)Price grouped by Category\n(5)Category\n(6)Reset Sort\n(0)Return back");
@@ -210,13 +206,13 @@ namespace Shop
                                                 break;
                                         }
                                         break;
-                                    case "0":
+                                    case "0"://Exit
                                         inShop = false;
                                         break;
                                 }
                             }
                         }
-                        else
+                        else//User said no for if he/she want to enter the shop
                         {
                             Console.WriteLine("You will return back to main menu!");
                             Console.ReadKey();
