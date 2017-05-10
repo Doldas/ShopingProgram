@@ -9,75 +9,129 @@ namespace Shop
     class ItemStorage<T> : IEnumerable<ItemStorage<T>>
                                                 where T:Item
     {
-        protected List<Item> internalStorage { get; set; }
-
-        protected ItemStorage()
+        //A storage list
+        private List<Item> internalStorage;
+        //Constructor
+        public ItemStorage()
         {
-            internalStorage = new List<Item>
-            {
-                //Potions
-                new Item
-                {
-                    ProductNumber="#100-000-001",
-                    Name="Health Potion IV",
-                    Category=Category.Potion,
-                    Price=1999.99
-                },
-                new Item
-                {
-                    ProductNumber="#100-000-002",
-                    Name="God Potion I",
-                    Category=Category.Potion,
-                    Price=3784.84
-                },
-                new Item
-                {
-                    ProductNumber="#100-000-003",
-                    Name="Ultimate Badass Potion XVII",
-                    Category=Category.Potion,
-                    Price=9999.99
-                },
-                //Scrolls
-                new Item
-                {
-                    ProductNumber="#100-000-004",
-                    Name="Healing Scroll VI",
-                    Category=Category.Scroll,
-                    Price=2348.49
-                },
-                new Item
-                {
-                    ProductNumber="#100-000-005",
-                    Name="Teleportation Scroll",
-                    Category=Category.Scroll,
-                    Price=1490
-                },
-                //Spells
-                new Item
-                {
-                    ProductNumber="#100-000-006",
-                    Name="Complete Schoolwork Spell",
-                    Category=Category.Spell,
-                    Price=859.39
-                },
-                new Item
-                {
-                    ProductNumber="#100-000-007",
-                    Name="Cleaning Spell",
-                    Category=Category.Spell,
-                    Price=149
-                },
-                new Item
-                {
-                    ProductNumber="#100-000-008",
-                    Name="Holiday Spell III",
-                    Category=Category.Spell,
-                    Price=39
-                },
-            };
+            internalStorage = new List<Item>();
         }
+        //All Search Methods for searching Items
+        #region Search Method
+        public Item GetItem(string search)
+        {
+            try
+            {
+             if (FindItem(search).First()!=null)
+                {
+                    return FindItem(search).First();
+                }
+            }
+            catch(Exception e)
+            {
 
-        protected IEnumerable<Item> SortCategory(bool ascend)
+            }
+            return null;
+
+           
+        }
+        public void Remove(T itemToRemove)
+        {
+            internalStorage.Remove(itemToRemove);
+        }
+        private IEnumerable<Item> FindItem(string searchTerm)
+        {
+            return
+                from item in internalStorage
+                where item.Name == searchTerm || item.ProductNumber == searchTerm
+                select item;
+        }
+        public IEnumerable<Item> SearchName(string searchTerm)
+        {
+            var output =
+                from item in internalStorage
+                where item.Name.Contains(searchTerm) == true
+                select item;
+            return output;
+        }
+        protected IEnumerable<Item> SearchPriceLower(double price)
+        {
+            var output =
+                from item in internalStorage
+                where item.Price<=price
+                select item;
+            return output;
+        }
+        protected IEnumerable<Item> SearchPriceHigher(double price)
+        {
+            var output =
+                from item in internalStorage
+                where item.Price >= price
+                select item;
+            return output;
+        }
+        protected IEnumerable<Item>SearchNameOrPrice(string input,Category category)
+        {
+            double i=-1;
+            bool searchPrice = false;
+            try
+            {
+                i=double.Parse(input);
+                if (i != -1)
+                {
+                    searchPrice = true;
+                }
+            }
+            catch(Exception e)
+            {
+                if(input==null)
+                {
+                    return null;
+                }
+            }
+            if(searchPrice==true)
+            {
+                return
+                        from item in internalStorage
+                        where item.Price == i && item.Category==category
+                        select item;
+            }
+            else
+            {
+                return from item in internalStorage
+                       where item.Name == input && item.Category == category
+                       select item;
+            }
+                
+        }
+        #endregion
+        //Add Method
+        public void Add(Item item)
+        {
+            if (item != null)
+            {
+                bool exist = false; //Variable that says if an item exist or not in the storage
+                foreach(Item tempItem in internalStorage)
+                {
+                    if(tempItem.Equals(item))
+                    {
+                        exist = true;
+                    }
+                }
+                //Add the new item if same item do
+                if (!exist)
+                {
+                    internalStorage.Add(item);
+                }
+            }
+        }
+        protected IEnumerable<Item>GetAllItems()
+        {
+            return
+                from item in internalStorage
+                select item;
+        }
+        public IEnumerable<Item> SortCategory(bool ascend)
         {
             if (ascend)
             {
@@ -89,7 +143,7 @@ namespace Shop
                 return internalStorage.OrderByDescending(item => item.Category);
             }
         }
-        protected IEnumerable<Item> SortArticle(bool ascend)
+        public IEnumerable<Item> SortArticle(bool ascend)
         {
             if (ascend)
             {
@@ -102,7 +156,7 @@ namespace Shop
             }
         }
         #region Query Syntax Methods
-        protected IEnumerable<Item> SortItemName(bool ascend)
+        public IEnumerable<Item> SortItemName(bool ascend)
         {
             if(ascend)
             {
@@ -119,7 +173,49 @@ namespace Shop
                     select item;
             }
         }
-        protected IEnumerable<Item> SortPrice(bool ascend)
+        public IEnumerable<Item> SortPriceAndCategory(bool ascend)
+        {
+            if (ascend)
+            {
+                return
+                    from item in internalStorage
+                    orderby item.Category,
+                    item.Price ascending
+                    select item;
+                    
+                    
+                    
+            }
+            else
+            {
+                return
+                    from item in internalStorage
+                    orderby item.Category,
+                    item.Price descending
+                 
+                    select item;
+            }
+        }
+        public IEnumerable<Item> SortPriceAndName(bool ascend)
+        {
+            if (ascend)
+            {
+                return
+                    from item in internalStorage
+                    orderby item.Name,
+                    item.Price ascending
+                    select item;
+            }
+            else
+            {
+                return
+                    from item in internalStorage
+                    orderby item.Name descending,
+                    item.Price descending
+                    select item;
+            }
+        }
+        public IEnumerable<Item> SortPrice(bool ascend)
         {
             if (ascend)
             {
