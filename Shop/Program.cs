@@ -100,10 +100,20 @@ namespace Shop
                                     {
                                         Console.Clear();
 
-                                        Console.WriteLine("1. Remove Item   2. Get Receipt  3. Return back");
-                                        foreach(Item item in shop.GetCartList())
+                                        Console.WriteLine("1. Remove Item   2. Check out  3. Return back");
+                                        PrintLine();
+                                        string[] column4 = { "Article Number", "Name", "Category", "Price" };
+                                        PrintRow("Item List");
+                                        PrintLine();
+                                        PrintRow(column4);
+                                        column = null;
+
+                                        foreach (var item in shop.GetCartList())
                                         {
-                                            Console.WriteLine("Name: " + item.Name + "\nArticle Number: " + item.ProductNumber);
+                                            PrintLine();
+                                            string[] column2 = { item.ProductNumber, item.Name, item.Category.ToString(), item.Price.ToString() + "$" };
+                                            PrintRow(column2);
+
                                         }
                                         switch(Console.ReadLine())
                                         {
@@ -122,8 +132,30 @@ namespace Shop
                                                 break;
                                             case "2": //Get the Shopping Reciept and output it too console
                                                 Console.Clear();
-                                                Console.WriteLine(shop.GetReceipt());
-                                                Console.ReadKey();
+          
+                                                Console.WriteLine("Do you want to check out? (y/n)");
+                                                    
+                                          
+                                               bool questioning2 = true;
+                                                while(questioning2==true)
+                                                {
+                                                    switch(Console.ReadLine())
+                                                    {
+                                                        case "y":
+                                                            questioning2=false;
+                                                            shoppingListLoop = false;
+                                                            inShop = false;
+                                                            Console.Clear();
+                                                            Console.WriteLine(shop.GetReceipt());
+                                                            Console.ReadKey();
+                                                            break;
+                                                        case"n":
+                                                            questioning2 = false;
+                                                            
+                                                            break;
+                                                    }
+                                                }
+                                               
                                                 break;
                                             case "3"://Return back
                                                 shoppingListLoop = false;
